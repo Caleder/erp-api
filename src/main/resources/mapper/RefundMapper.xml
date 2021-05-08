@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="check.net.erp.bc.dao.RefundDao">
+
+
+    <resultMap type="com.alibaba.fastjson.JSONObject" id="resultObj"></resultMap>
+
+    <select id="queryPage" parameterType="com.alibaba.fastjson.JSONObject" resultType="check.net.erp.bc.model.Refund">
+        SELECT r.* from bc_refund r left join
+        uc_supplier s on r.supplierId = s.id WHERE 1 = 1
+        <if test="query.name != null and query.name != ''">
+            AND (
+              r.`code` LIKE concat('%', #{query.name}, '%') OR
+              s.`name` LIKE concat('%', #{query.name}, '%') OR
+              s.`code` LIKE concat('%', #{query.name}, '%')
+              )
+        </if>
+        <if test="query.startDate != null and query.startDate != ''">
+            AND r.`issueDate` <![CDATA[ >= ]]> #{query.startDate}
+        </if>
+        <if test="query.endDate != null and query.endDate != ''">
+            AND r.`issueDate` <![CDATA[  <= ]]> #{query.endDate}
+        </if>
+        ORDER BY r.createdTime DESC
+    </select>
+
+</mapper>
